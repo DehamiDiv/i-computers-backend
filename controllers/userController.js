@@ -1,6 +1,8 @@
 import User from "../Models/user.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
 
 export function createUser(req, res) {
   const hashedPassword = bcrypt.hashSync(req.body.password, 10);
@@ -34,7 +36,7 @@ export function loginUser(req, res) {
       } else {
         const isPasswordValid = bcrypt.compareSync(
           req.body.password,
-          user.password
+          user.password,
         );
 
         if (isPasswordValid) {
@@ -47,7 +49,7 @@ export function loginUser(req, res) {
               image: user.image,
               isEmailVerified: user.isEmailVerified,
             },
-            "icomputers-541"
+            process.env.JWT_SECRET,
           );
 
           console.log(token);
@@ -78,13 +80,13 @@ export function loginUser(req, res) {
     });
 }
 
-export function isAdmin(req){
-  if(req.user == null){
+export function isAdmin(req) {
+  if (req.user == null) {
     return false;
   }
-  if(req.user.rolr=="admin"){ 
+  if (req.user.role == "admin") {
     return true;
-  }else{
+  } else {
     return false;
   }
 }

@@ -3,9 +3,11 @@ import mongoose from "mongoose";
 import userRouter from "./router/userRouter.js";
 import productRouter from "./router/productRouter.js";
 import authorizeUser from "./lib/jwtMiddleware.js";
+import cors from "cors";
+import dotenv from "dotenv";
+dotenv.config();
 
-const mongoURL =
-  "mongodb+srv://Dehami123:Divya%402003@cluster0.yevsenv.mongodb.net/?appName=Cluster0";
+const mongoURL = process.env.MONGO_URI;
 
 mongoose
   .connect(mongoURL)
@@ -17,15 +19,14 @@ mongoose
   });
 
 const app = express();
+app.use(cors());
 
 app.use(express.json());
 
-app.use(authorizeUser)
-
-
-
 // Mount user routes
 app.use("/users", userRouter);
+
+app.use(authorizeUser);
 app.use("/products", productRouter);
 
 app.get("/", (req, res) => {
